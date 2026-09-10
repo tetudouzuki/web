@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JR東日本 主要駅別リスト</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #008000;
+            border-bottom: 3px solid #008000;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        p.subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .category {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        h2 {
+            color: #111;
+            font-size: 1.3em;
+            border-left: 5px solid #008000;
+            padding-left: 10px;
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+            width: 25%;
+        }
+        td {
+            color: #555;
+        }
+        .station-name {
+            font-weight: bold;
+            color: #008000;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>JR東日本 主要駅別リスト</h1>
+    <p class="subtitle">首都圏および各エリアの主な路線と代表的な駅のまとめ</p>
+
+    <!-- 山手線 -->
+    <div class="category">
+        <h2>山手線 (Yamanote Line)</h2>
+        <table>
+            <tr>
+                <th>主要駅</th>
+                <td>
+                    <span class="station-name">東京</span>、<span class="station-name">品川</span>、<span class="station-name">渋谷</span>、<span class="station-name">新宿</span>、<span class="station-name">池袋</span>、<span class="station-name">上野</span>、秋葉原、新橋、有楽町、大崎、高輪ゲートウェイ、恵比寿、原宿、代々木、新大久保、高田馬場、目白、巣鴨、駒込、田端、西日暮里、日暮里、鶯谷、御徒町、神田、浜松町、田町
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- 中央線・総武線 -->
+    <div class="category">
+        <h2>中央線・総武線 (Chuo & Sobu Line)</h2>
+        <table>
+            <tr>
+                <th>中央線快速</th>
+                <td><span class="station-name">東京</span>、神田、御茶ノ水、四ツ谷、<span class="station-name">新宿</span>、中野、高円寺、阿佐ケ谷、荻窪、西荻窪、吉祥寺、三鷹、武蔵小金井、国分寺、<span class="station-name">立川</span>、<span class="station-name">八王子</span>、高尾</td>
+            </tr>
+            <tr>
+                <th>総武線各駅停車</th>
+                <td>三鷹、中野、<span class="station-name">新宿</span>、御茶ノ水、秋葉原、浅草橋、両国、錦糸町、亀戸、新小岩、市川、船橋、津田沼、<span class="station-name">千葉</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- 京浜東北線 -->
+    <div class="category">
+        <h2>京浜東北線・根岸線 (Keihin-Tohoku & Negishi Line)</h2>
+        <table>
+            <tr>
+                <th>主要駅</th>
+                <td><span class="station-name">大宮</span>、浦和、赤羽、田端、上野、秋葉原、東京、新橋、品川、蒲田、川崎、<span class="station-name">横浜</span>、桜木町、関内、石川町、磯子、<span class="station-name">大船</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- 新幹線 -->
+    <div class="category">
+        <h2>JR東日本 新幹線 (Shinkansen)</h2>
+        <table>
+            <tr>
+                <th>東北新幹線</th>
+                <td>東京、上野、大宮、宇都宮、郡山、福島、仙台、古川、一ノ関、北上、盛岡、八戸、新青森</td>
+            </tr>
+            <tr>
+                <th>上越新幹線</th>
+                <td>東京、上野、大宮、熊谷、本庄早稲田、高崎、越後湯沢、長岡、新潟</td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>
