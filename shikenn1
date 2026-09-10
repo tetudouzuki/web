@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン & アカウント作成</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+        }
+
+        /* タブ切り替えボタン */
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 5px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn.admin-tab.active {
+            color: #dc3545;
+            border-bottom-color: #dc3545;
+        }
+
+        /* フォーム基本スタイル */
+        .form-content {
+            display: none;
+        }
+
+        .form-content.active {
+            display: block;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #007bff;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* 管理者画面用の装飾 */
+        .admin-btn {
+            background-color: #dc3545;
+        }
+
+        .admin-btn:hover {
+            background-color: #bd2130;
+        }
+
+        .admin-badge {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .form-footer {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .form-footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- ナビゲーションタブ -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('signup')">新規登録</button>
+        <button class="tab-btn" onclick="switchTab('login')">ログイン</button>
+        <button class="tab-btn admin-tab" onclick="switchTab('admin')">管理者</button>
+    </div>
+
+    <!-- 1. アカウント作成（新規登録） -->
+    <div id="signup" class="form-content active">
+        <h2>新規アカウント登録</h2>
+        <form action="#" method="POST">
+            <div class="input-group">
+                <label for="signup-name">お名前</label>
+                <input type="text" id="signup-name" required placeholder="山田 太郎">
+            </div>
+            <div class="input-group">
+                <label for="signup-email">メールアドレス</label>
+                <input type="email" id="signup-email" required placeholder="example@email.com">
+            </div>
+            <div class="input-group">
+                <label for="signup-password">パスワード</label>
+                <input type="password" id="signup-password" required placeholder="8文字以上">
+            </div>
+            <button type="submit" class="submit-btn">登録する</button>
+        </form>
+    </div>
+
+    <!-- 2. ユーザーログイン -->
+    <div id="login" class="form-content">
+        <h2>ユーザーログイン</h2>
+        <form action="#" method="POST">
+            <div class="input-group">
+                <label for="login-email">メールアドレス</label>
+                <input type="email" id="login-email" required placeholder="example@email.com">
+            </div>
+            <div class="input-group">
+                <label for="login-password">パスワード</label>
+                <input type="password" id="login-password" required>
+            </div>
+            <button type="submit" class="submit-btn">ログイン</button>
+            <div class="form-footer">
+                <a href="#">パスワードをお忘れですか？</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- 3. 管理者ログイン -->
+    <div id="admin" class="form-content">
+        <h2>管理者ログイン</h2>
+        <div class="admin-badge">⚠️ 関係者専用のログイン画面です</div>
+        <form action="#" method="POST">
+            <div class="input-group">
+                <label for="admin-id">管理者ID / メールアドレス</label>
+                <input type="text" id="admin-id" required placeholder="admin_id">
+            </div>
+            <div class="input-group">
+                <label for="admin-password">パスワード</label>
+                <input type="password" id="admin-password" required>
+            </div>
+            <div class="input-group">
+                <label for="admin-key">セキュリティキー（2段階認証）</label>
+                <input type="password" id="admin-key" placeholder="任意：ワンタイムパスワード等">
+            </div>
+            <button type="submit" class="submit-btn admin-btn">管理者ログイン</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // タブ切り替え処理
+    function switchTab(tabId) {
+        // すべてのフォームを非表示
+        const forms = document.querySelectorAll('.form-content');
+        forms.forEach(form => form.classList.remove('active'));
+
+        // すべてのタブの選択状態を解除
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs.forEach(tab => tab.classList.remove('active'));
+
+        // 指定されたフォームとタブを有効化
+        document.getElementById(tabId).classList.add('active');
+        
+        // クリックされたボタンのスタイル更新
+        const activeBtn = Array.from(tabs).find(
+            btn => btn.getAttribute('onclick').includes(tabId)
+        );
+        if (activeBtn) activeBtn.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
