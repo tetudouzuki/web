@@ -95,10 +95,6 @@
             outline: none;
         }
 
-        .input-group input:focus {
-            border-color: #007bff;
-        }
-
         .submit-btn {
             width: 100%;
             padding: 12px;
@@ -117,34 +113,42 @@
             background-color: #0056b3;
         }
 
-        /* 管理者画面用の装飾 */
-        .admin-btn {
-            background-color: #dc3545;
-        }
-
-        .admin-btn:hover {
-            background-color: #bd2130;
-        }
-
-        .admin-badge {
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 8px;
-            border-radius: 4px;
+        /* 完了画面用のスタイル */
+        .success-icon {
+            font-size: 48px;
+            color: #28a745;
             text-align: center;
-            font-size: 12px;
             margin-bottom: 15px;
         }
 
-        .form-footer {
-            margin-top: 15px;
+        .success-message {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
             text-align: center;
-            font-size: 12px;
+            margin-bottom: 20px;
         }
 
-        .form-footer a {
+        .user-email-display {
+            font-weight: bold;
             color: #007bff;
-            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .secondary-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            color: #495057;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .secondary-btn:hover {
+            background-color: #dae0e5;
         }
     </style>
 </head>
@@ -152,7 +156,7 @@
 
 <div class="container">
     <!-- ナビゲーションタブ -->
-    <div class="tabs">
+    <div class="tabs" id="tab-header">
         <button class="tab-btn active" onclick="switchTab('signup')">新規登録</button>
         <button class="tab-btn" onclick="switchTab('login')">ログイン</button>
         <button class="tab-btn admin-tab" onclick="switchTab('admin')">管理者</button>
@@ -161,7 +165,7 @@
     <!-- 1. アカウント作成（新規登録） -->
     <div id="signup" class="form-content active">
         <h2>新規アカウント登録</h2>
-        <form action="#" method="POST">
+        <form onsubmit="handleSignup(event)">
             <div class="input-group">
                 <label for="signup-name">お名前</label>
                 <input type="text" id="signup-name" required placeholder="山田 太郎">
@@ -178,6 +182,19 @@
         </form>
     </div>
 
+    <!-- 1.5 新規作成完了画面（入力後に表示される画面） -->
+    <div id="signup-success" class="form-content">
+        <div class="success-icon">✉️</div>
+        <h2>仮登録が完了しました</h2>
+        <p class="success-message">
+            ご入力いただいたメールアドレス<br>
+            <span id="display-email" class="user-email-display">example@email.com</span> に確認メールを送信しました。<br><br>
+            メール内のURLをクリックして、本登録を完了してください。
+        </p>
+        <button type="button" class="submit-btn" onclick="switchTab('login')">ログイン画面へ移動</button>
+        <button type="button" class="secondary-btn" onclick="resendEmail()">確認メールを再送する</button>
+    </div>
+
     <!-- 2. ユーザーログイン -->
     <div id="login" class="form-content">
         <h2>ユーザーログイン</h2>
@@ -191,30 +208,22 @@
                 <input type="password" id="login-password" required>
             </div>
             <button type="submit" class="submit-btn">ログイン</button>
-            <div class="form-footer">
-                <a href="#">パスワードをお忘れですか？</a>
-            </div>
         </form>
     </div>
 
     <!-- 3. 管理者ログイン -->
     <div id="admin" class="form-content">
         <h2>管理者ログイン</h2>
-        <div class="admin-badge">⚠️ 関係者専用のログイン画面です</div>
         <form action="#" method="POST">
             <div class="input-group">
-                <label for="admin-id">管理者ID / メールアドレス</label>
-                <input type="text" id="admin-id" required placeholder="admin_id">
+                <label for="admin-id">管理者ID</label>
+                <input type="text" id="admin-id" required>
             </div>
             <div class="input-group">
                 <label for="admin-password">パスワード</label>
                 <input type="password" id="admin-password" required>
             </div>
-            <div class="input-group">
-                <label for="admin-key">セキュリティキー（2段階認証）</label>
-                <input type="password" id="admin-key" placeholder="任意：ワンタイムパスワード等">
-            </div>
-            <button type="submit" class="submit-btn admin-btn">管理者ログイン</button>
+            <button type="submit" class="submit-btn" style="background-color: #dc3545;">管理者ログイン</button>
         </form>
     </div>
 </div>
@@ -222,22 +231,43 @@
 <script>
     // タブ切り替え処理
     function switchTab(tabId) {
-        // すべてのフォームを非表示
+        // タブヘッダーを再表示
+        document.getElementById('tab-header').style.display = 'flex';
+
         const forms = document.querySelectorAll('.form-content');
         forms.forEach(form => form.classList.remove('active'));
 
-        // すべてのタブの選択状態を解除
         const tabs = document.querySelectorAll('.tab-btn');
         tabs.forEach(tab => tab.classList.remove('active'));
 
-        // 指定されたフォームとタブを有効化
         document.getElementById(tabId).classList.add('active');
         
-        // クリックされたボタンのスタイル更新
         const activeBtn = Array.from(tabs).find(
-            btn => btn.getAttribute('onclick').includes(tabId)
+            btn => btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(tabId)
         );
         if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    // 新規登録ボタンが押された時の処理（デモ用）
+    function handleSignup(event) {
+        event.preventDefault(); // 実際の送信をキャンセル
+
+        // 入力されたメールアドレスを取得して画面に反映
+        const emailInput = document.getElementById('signup-email').value;
+        document.getElementById('display-email').textContent = emailInput;
+
+        // 全フォームを非表示にして、完了画面を表示
+        const forms = document.querySelectorAll('.form-content');
+        forms.forEach(form => form.classList.remove('active'));
+        
+        document.getElementById('signup-success').classList.add('active');
+
+        // 完了画面では上部のタブを一時的に非表示にする場合
+        document.getElementById('tab-header').style.display = 'none';
+    }
+
+    function resendEmail() {
+        alert('確認メールを再送しました。');
     }
 </script>
 
