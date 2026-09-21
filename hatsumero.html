@@ -1,6 +1,150 @@
 <video src="copy_90F5E942-B076-4247-BB10-904B5313F0A4.MOV" controls controlslist="nodownload" oncontextmenu="return false;" style="max-width: 100%; height: auto;"></video>
  
-<!-- 開閉器本体 -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>春日電機 BSW215B3（音付き）</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+        }
+
+        /* スイッチ本体（防雨形プラスチックケース） */
+        .switch-body {
+            width: 140px;
+            height: 240px;
+            background: linear-gradient(135deg, #e0e0e0, #bcbcbc);
+            border-radius: 12px;
+            box-shadow: 
+                inset 2px 2px 5px rgba(255,255,255,0.7),
+                inset -2px -2px 5px rgba(0,0,0,0.2),
+                5px 10px 20px rgba(0,0,0,0.3);
+            border: 1px solid #a0a0a0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            padding: 20px 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        /* 銘板・型番テキスト */
+        .brand-plate {
+            text-align: center;
+            color: #333;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .model-number {
+            font-size: 10px;
+            color: #555;
+            font-weight: normal;
+        }
+
+        /* ボタン共通の土台（ガード） */
+        .btn-container {
+            width: 75px;
+            height: 75px;
+            background: #999;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 
+                inset 3px 3px 6px rgba(0,0,0,0.4),
+                1px 1px 2px rgba(255,255,255,0.8);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        /* 押しボタン共通スタイル */
+        .push-btn {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+            transition: all 0.05s ease;
+            outline: none;
+        }
+
+        /* ONボタン（緑） */
+        .btn-on {
+            background: radial-gradient(circle at 35% 35%, #2ecc71, #1e824c);
+            box-shadow: 
+                2px 3px 5px rgba(0,0,0,0.4),
+                inset 1px 1px 3px rgba(255,255,255,0.5);
+        }
+
+        .btn-on:active {
+            background: radial-gradient(circle at 35% 35%, #25a25a, #186a3b);
+            box-shadow: 
+                1px 1px 2px rgba(0,0,0,0.4),
+                inset 2px 2px 4px rgba(0,0,0,0.6);
+            transform: translateY(1px);
+        }
+
+        /* OFFボタン（赤） */
+        .btn-off {
+            background: radial-gradient(circle at 35% 35%, #e74c3c, #962d22);
+            box-shadow: 
+                3px 4px 7px rgba(0,0,0,0.5),
+                inset 1px 1px 3px rgba(255,255,255,0.6);
+        }
+
+        .btn-off:active {
+            background: radial-gradient(circle at 35% 35%, #c0392b, #7b1f16);
+            box-shadow: 
+                1px 1px 2px rgba(0,0,0,0.4),
+                inset 2px 2px 4px rgba(0,0,0,0.6);
+            transform: translateY(2px);
+        }
+
+        /* ケース固定用ネジ */
+        .screw {
+            width: 10px;
+            height: 10px;
+            background: #999;
+            border-radius: 50%;
+            position: absolute;
+            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        .screw::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 1px;
+            width: 8px;
+            height: 2px;
+            background: #666;
+        }
+        .screw-top { top: 8px; }
+        .screw-bottom { bottom: 8px; }
+    </style>
+</head>
+<body>
+
+    <!-- 開閉器本体 -->
     <div class="switch-body">
         <div class="screw screw-top"></div>
         
@@ -10,18 +154,79 @@
             <span class="model-number">BSW 215B3</span>
         </div>
 
-        <!-- ON ボタン (上) -->
+        <!-- ON ボタン -->
         <div class="btn-container">
-            <button class="push-btn btn-on" onclick="console.log('ON Clicked')">ON</button>
+            <button class="push-btn btn-on" onmousedown="playClickSound(true)">ON</button>
         </div>
 
-        <!-- OFF ボタン (下) -->
+        <!-- OFF ボタン -->
         <div class="btn-container">
-            <button class="push-btn btn-off" onclick="console.log('OFF Clicked')">OFF</button>
+            <button class="push-btn btn-off" onmousedown="playClickSound(false)">OFF</button>
         </div>
 
         <div class="screw screw-bottom"></div>
     </div>
 
+    <script>
+        // Web Audio API を使ってスイッチの物理的なクリック音を合成
+        function playClickSound(isOn) {
+            // ブラウザのオーディオ環境を初期化
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+            const ctx = new AudioContext();
+
+            // 1. 低い金属的な響き（ベースの衝撃音）
+            const osc = ctx.createOscillator();
+            const gainOsc = ctx.createGain();
+            
+            // ONは少し高め、OFFは重く低い音に設定
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(isOn ? 180 : 120, ctx.currentTime);
+            // 一瞬で周波数を落として突入感を出す
+            osc.frequency.exponentialRampToValueAtTime(10, ctx.currentTime + 0.03);
+
+            // 2. 高い摩擦音（「カチッ」としたノイズ成分）
+            const bufferSize = ctx.sampleRate * 0.02; // 0.02秒分のノイズ
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            const noise = ctx.createBufferSource();
+            noise.buffer = buffer;
+
+            // ノイズ用の高音フィルター
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(isOn ? 3000 : 2200, ctx.currentTime);
+
+            const gainNoise = ctx.createGain();
+
+            // 音量の時間変化（エンベロープ）を設定
+            // 衝撃音の減衰
+            gainOsc.gain.setValueAtTime(0.5, ctx.currentTime);
+            gainOsc.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.04);
+            
+            // ノイズの減衰（一瞬だけ鳴らす）
+            gainNoise.gain.setValueAtTime(0.7, ctx.currentTime);
+            gainNoise.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.02);
+
+            // 接続
+            osc.connect(gainOsc);
+            gainOsc.connect(ctx.destination);
+
+            noise.connect(filter);
+            filter.connect(gainNoise);
+            gainNoise.connect(ctx.destination);
+
+            // 再生開始と停止
+            osc.start();
+            noise.start();
+            osc.stop(ctx.currentTime + 0.05);
+            noise.stop(ctx.currentTime + 0.05);
+        }
+    </script>
+
 </body>
 </html>
+
