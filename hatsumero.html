@@ -126,3 +126,152 @@
         <rect class="button" id="offButton" x="432" y="445" width="100" height="100" fill="#e06666" stroke="#e06666" stroke-width="2"></rect>
         <text class="button" id="offText" x="440" y="515" font-size="50" fill="white">OFF</text>
         </svg>
+
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メロディーブザー制御</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            font-family: sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .btn {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .btn:active {
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- SVGパーツ。ONとOFFの領域をクリックできるようにボタン化しています -->
+    <svg xmlns:xlink="http://w3.org" xmlns="http://w3.org" version="1.1" fill="none" stroke="none" stroke-linecap="square" stroke-miterlimit="10" viewBox="0 0 960 720" width="480">
+        <clipPath id="p.0">
+            <path d="m0 0l960.0 0l0 720.0l-960.0 0l0 -720.0z" clip-rule="nonzero"></path>
+        </clipPath>
+        <g clip-path="url(#p.0)">
+            <path fill="#000000" fill-opacity="0.0" d="m0 0l960.0 0l0 720.0l-960.0 0z" fill-rule="evenodd"></path>
+            <!-- 本体ベース -->
+            <path fill="#e4cab2" d="m287.62836 107.933846l0 0c0 -31.257118 25.338898 -56.59602 56.59604 -56.59602l271.5009 0c15.010193 0 29.405579 5.96278 40.01941 16.576595c10.613831 10.613808 16.5766 25.009232 16.5766 40.019424l0 503.87885c0 31.25718 -25.338928 56.59601 -56.59601 56.59601l-271.5009 0c-31.257141 0 -56.59604 -25.338928 -56.59604 -56.59601z" fill-rule="evenodd"></path>
+            <path stroke="#000000" stroke-width="2" stroke-linejoin="round" stroke-linecap="butt" d="m287.62836 107.933846l0 0c0 -31.257118 25.338898 -56.59602 56.59604 -56.59602l271.5009 0c15.010193 0 29.405579 5.96278 40.01941 16.576595c10.613831 10.613808 16.5766 25.009232 16.5766 40.019424l0 503.87885c0 31.25718 -25.338928 56.59601 -56.59601 56.59601l-271.5009 0c-31.257141 0 -56.59604 -25.338928 -56.59604 -56.59601z" fill-rule="evenodd"></path>
+            
+            <!-- 上部ディスプレイエリア -->
+            <path fill="#ffffff" d="m369.54874 154.39572l223.52756 0l0 70.11023l-223.52756 0z" fill-rule="evenodd"></path>
+            <path stroke="#000000" stroke-width="2" stroke-linejoin="round" stroke-linecap="butt" d="m369.54874 154.39572l223.52756 0l0 70.11023l-223.52756 0z" fill-rule="evenodd"></path>
+            <text x="480" y="200" fill="#000000" font-size="28" font-weight="bold" text-anchor="middle" id="status-text">停止中</text>
+
+            <!-- 【ONボタン】（上側をクリック領域に設定） -->
+            <g class="btn" id="on-button">
+                <path fill="#4CAF50" d="m340 280 h280 v120 h-280 z" rx="10"></path>
+                <text x="480" y="350" fill="#ffffff" font-size="36" font-weight="bold" text-anchor="middle">ON (再生)</text>
+            </g>
+
+            <!-- 【OFFボタン】（下側をクリック領域に設定） -->
+            <g class="btn" id="off-button">
+                <path fill="#F44336" d="m340 440 h280 v120 h-280 z" rx="10"></path>
+                <text x="480" y="510" fill="#ffffff" font-size="36" font-weight="bold" text-anchor="middle">OFF (停止)</text>
+            </g>
+        </g>
+    </svg>
+</div>
+
+<script>
+    // ブラウザのWeb Audio APIを使ってシンセサイザー風のメロディを生成
+    let audioCtx = null;
+    let melodyInterval = null;
+    const statusText = document.getElementById('status-text');
+
+    // 簡単なチャイムの音階 (ド・ミ・ソ・ド) と音の長さ(秒)
+    const melody = [
+        { note: 523.25, duration: 0.3 }, // C5 (ド)
+        { note: 659.25, duration: 0.3 }, // E5 (ミ)
+        { note: 783.99, duration: 0.3 }, // G5 (ソ)
+        { note: 1046.50, duration: 0.6 } // C6 (高ド)
+    ];
+
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    }
+
+    function playNote(freq, duration) {
+        if (!audioCtx) return;
+        
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        oscillator.type = 'sine'; // 柔らかなサイン波
+        oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        // 音の終わりのプチプチ音を防ぐためにフェードアウト
+        gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + duration);
+    }
+
+    function startMelody() {
+        initAudio();
+        if (melodyInterval) return; // すでに再生中なら何もしない
+
+        statusText.textContent = "再生中 ♪";
+        statusText.setAttribute("fill", "#4CAF50");
+
+        let noteIndex = 0;
+        
+        function playLoop() {
+            const currentNote = melody[noteIndex];
+            playNote(currentNote.note, currentNote.duration);
+            
+            noteIndex = (noteIndex + 1) % melody.length;
+            
+            // 次の音を鳴らすタイミング（最後の音の後だけ少し長めの余白を作る）
+            const delay = (noteIndex === 0) ? 1200 : 400; 
+            melodyInterval = setTimeout(playLoop, delay);
+        }
+
+        playLoop();
+    }
+
+    function stopMelody() {
+        if (melodyInterval) {
+            clearTimeout(melodyInterval);
+            melodyInterval = null;
+        }
+        statusText.textContent = "停止中";
+        statusText.setAttribute("fill", "#000000");
+    }
+
+    // SVGボタンにクリックイベントを設定
+    document.getElementById('on-button').addEventListener('click', startMelody);
+    document.getElementById('off-button').addEventListener('click', stopMelody);
+</script>
+
+</body>
+</html>
